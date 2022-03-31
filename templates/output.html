@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+
+{% block title %}
+{{ location }}
+{% endblock %}
+
+{% block body_tag %}
+<body class="{{ condition_class }}">
+{% endblock %}
+
+{% block main %}
+<div class="container">
+    <div class="app">
+        <div class="header">
+            <h3>{{ location_city_town }}</h3>
+            <h1>{{ temperature }}&deg;</h1>
+            <h4>{{ conditions }}</h4>
+            <h4>H:{{ high_temp }}&deg; L:{{ low_temp }}&deg;</h4>
+        </div>
+        <div class="today-forecast-parent">
+            <h4>HOURLY FORECAST</h4>
+            <div class="today-forecast">
+                {% for dict_item in forecast_list %}
+                <div class="forecast-item">
+                    <span class="time">{{ dict_item.time }}</span>
+                    <span class="icon">{{ dict_item.icon }}</span>
+                    <span class="detail">{{ dict_item.detail }}&deg;</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="ten-day-forecast">
+            <h4>3-DAY FORECAST</h4>
+            {% for dict_item in ten_day_forecast %}
+            <div class="ten-day-item">
+                <span class="time">{{ dict_item.time }}</span>
+                <span class="icon">{{ dict_item.icon }}</span>
+                <div class="low-high">
+                    <span class="low">L: {{ dict_item.low_temp }}</span>
+                    <span class="high">H: {{ dict_item.high_temp }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

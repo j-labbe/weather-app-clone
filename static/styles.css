@@ -1,0 +1,401 @@
+@font-face {
+    font-family: "SFProText";
+    src: url("./SFPro/sf-pro-text-bold.eot");
+    src: url("./SFPro/sf-pro-text-bold.eot?#iefix") format("embedded-opentype"),
+        url("./SFPro/sf-pro-text-bold.woff") format("woff"), url("./SFPro/sf-pro-text-bold.ttf") format("truetype"),
+        url("./SFPro/sf-pro-text-bold.svg#sf_pro_textbold") format("svg");
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "SFProText";
+    src: url("./SFPro/sf-pro-text-heavy.eot");
+    src: url("./SFPro/sf-pro-text-heavy.eot?#iefix") format("embedded-opentype"),
+        url("./SFPro/sf-pro-text-heavy.woff") format("woff"), url("./SFPro/sf-pro-text-heavy.ttf") format("truetype"),
+        url("./SFPro/sf-pro-text-heavy.svg#sf_pro_textheavy") format("svg");
+    font-weight: 800;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "SFProText";
+    src: url("./SFPro/sf-pro-text-light.eot");
+    src: url("./SFPro/sf-pro-text-light.eot?#iefix") format("embedded-opentype"),
+        url("./SFPro/sf-pro-text-light.woff") format("woff"), url("./SFPro/sf-pro-text-light.ttf") format("truetype"),
+        url("./SFPro/sf-pro-text-light.svg#sf_pro_textlight") format("svg");
+    font-weight: 200;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "SFProText";
+    src: url("./SFPro/sf-pro-text-medium.eot");
+    src: url("./SFPro/sf-pro-text-medium.eot?#iefix") format("embedded-opentype"),
+        url("./SFPro/sf-pro-text-medium.woff") format("woff"), url("./SFPro/sf-pro-text-medium.ttf") format("truetype"),
+        url("./SFPro/sf-pro-text-medium.svg#sf_pro_textmedium") format("svg");
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "SFProText";
+    src: url("./SFPro/sf-pro-text-regular.eot");
+    src: url("./SFPro/sf-pro-text-regular.eot?#iefix") format("embedded-opentype"),
+        url("./SFPro/sf-pro-text-regular.woff") format("woff"), url("./SFPro/sf-pro-text-regular.ttf") format("truetype"),
+        url("./SFPro/sf-pro-text-regular.svg#sf_pro_textregular") format("svg");
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "SFProText";
+    src: url("./SFPro/sf-pro-text-semibold.eot");
+    src: url("./SFPro/sf-pro-text-semibold.eot?#iefix") format("embedded-opentype"),
+        url("./SFPro/sf-pro-text-semibold.woff") format("woff"), url("./SFPro/sf-pro-text-semibold.ttf") format("truetype"),
+        url("./SFPro/sf-pro-text-semibold.svg#sf_pro_textsemibold") format("svg");
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "SFProText";
+    src: ("./SFPro/sf-pro-thin.eot");
+    src: url("./SFPro/sf-pro-thin.woff") format("woff"), url("./SFPro/sf-pro-thin.ttf") format("truetype");
+    font-weight: 100;
+    font-style: normal;
+}
+
+:root {
+    --font: "SFProText", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", sans-serif;
+    --light: rgba(255, 255, 255, 1);
+    --yellow: rgba(249, 214, 74, 1);
+    --blue: rgba(126, 208, 250, 1);
+    --bad-weather-bg: rgba(54, 55, 56, 1);
+    --gray-line: rgba(103, 112, 124, 1);
+}
+
+html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+body {
+    font-family: var(--font);
+    font-size: 16px;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    margin-top: 45px;
+    overflow: hidden;
+    color: var(--light);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+a:visited {
+    color: currentColor;
+}
+
+nav {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 44px;
+    overflow: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.nav-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0;
+    width: 414px;
+}
+
+.nav-container .menu ul {
+    display: flex;
+    flex-direction: row;
+    list-style: none;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-container .menu ul li {
+    padding: 0;
+    margin: 0 2px;
+}
+
+.nav-container .menu ul li a {
+    height: 28px;
+    width: 28px;
+    color: var(--light);
+    text-decoration: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    transition: all 0.8s cubic-bezier(0.13, 0.85, 0.53, 1.02);
+}
+
+.nav-container .menu ul li a:hover {
+    opacity: 0.8;
+}
+
+/* .nav-container .menu ul li a.github {
+    color: #000;
+    filter: invert(1);
+} */
+
+/*  APP ELEMENTS  */
+
+.phone-emulation-box {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 10;
+    height: 100%;
+    width: 440px;
+    border: 2px solid var(--blue);
+    box-shadow: 500px 0px 77px 100px rgba(0, 0, 0, 0.1), -500px 0px 77px 100px rgba(0, 0, 0, 0.1);
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 45px;
+    padding-top: 40px;
+}
+
+.container .app {
+    max-width: 414px;
+    overflow: hidden;
+}
+
+.container .app .header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.container .app .header h3 {
+    margin: 0;
+    font-weight: 200;
+    font-size: 32px;
+    text-shadow: 0px 2px 9px rgb(0 0 0 / 19%);
+}
+.container .app .header h1 {
+    margin: 0;
+    padding-left: 27.32px; /* this should align the center of the digits with the center of the city. the width of the degree symbol at 84px in SF Pro thin is 27.32px */
+    font-weight: 100;
+    font-size: 84px;
+    text-shadow: 0px 2px 9px rgb(0 0 0 / 19%);
+}
+.container .app .header h4 {
+    margin: 0;
+    font-weight: 200;
+    font-size: 18px;
+    text-shadow: 0px 2px 9px rgb(0 0 0 / 19%);
+}
+
+.today-forecast-parent {
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    margin-top: 15px;
+}
+
+.today-forecast-parent h4 {
+    font-size: 14px;
+    font-weight: 200;
+    margin: 6px 10px 5px 10px;
+}
+
+.today-forecast-parent .today-forecast {
+    display: flex;
+    flex-direction: row;
+    overflow-x: scroll;
+    max-width: 400px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.317);
+}
+
+.today-forecast-parent .today-forecast::-webkit-scrollbar {
+    display: none;
+}
+
+.today-forecast .forecast-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+}
+
+.ten-day-forecast {
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    margin-top: 15px;
+}
+
+.ten-day-forecast h4 {
+    font-size: 14px;
+    font-weight: 200;
+    margin: 6px 10px 5px 10px;
+}
+
+.ten-day-item {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    justify-items: center;
+    align-items: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.317);
+    padding: 2.5px 0;
+}
+
+.ten-day-item .time {
+    justify-self: start;
+    padding-left: 20px;
+}
+
+.low-high {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100px;
+}
+
+.small {
+    font-size: 13px;
+}
+
+.footer {
+    margin: 0;
+    padding-bottom: 3px;
+    padding-top: 3px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.1);
+    transition: all 0.8s cubic-bezier(0.13, 0.85, 0.53, 1.02);
+}
+
+.footer:hover {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.footer button {
+    background: transparent;
+    background-image: url("data:image/svg+xml,%3Csvg width='28' height='28' viewBox='0 0 28 28' fill='none' xmlns='http://www.w3.org/2000/svg' id='search'%3E%3Cpath d='M12.5322 19.0332C13.9297 19.0332 15.2393 18.6113 16.3291 17.8906L20.1787 21.749C20.4336 21.9951 20.7588 22.1182 21.1104 22.1182C21.8398 22.1182 22.376 21.5469 22.376 20.8262C22.376 20.4922 22.2617 20.167 22.0156 19.9209L18.1924 16.0801C18.9834 14.9551 19.4492 13.5928 19.4492 12.1162C19.4492 8.31055 16.3379 5.19922 12.5322 5.19922C8.73535 5.19922 5.61523 8.31055 5.61523 12.1162C5.61523 15.9219 8.72656 19.0332 12.5322 19.0332ZM12.5322 17.1875C9.74609 17.1875 7.46094 14.9023 7.46094 12.1162C7.46094 9.33008 9.74609 7.04492 12.5322 7.04492C15.3184 7.04492 17.6035 9.33008 17.6035 12.1162C17.6035 14.9023 15.3184 17.1875 12.5322 17.1875Z' fill='%23FFF' id='search'/%3E%3C/svg%3E");
+    outline: none;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    width: 28px;
+    height: 28px;
+    transition: all 0.8s cubic-bezier(0.13, 0.85, 0.53, 1.02);
+}
+
+.footer button:hover {
+    opacity: 0.8;
+}
+
+.footer .form {
+    display: none;
+}
+
+.footer.open {
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    background: rgba(0, 0, 0, 0.4);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+
+.footer.open button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-image: url("data:image/svg+xml,%3Csvg width='28' height='28' viewBox='0 0 28 28' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M8.31361 17.9346C7.94447 18.3037 7.92689 18.9629 8.3224 19.3408C8.70033 19.7363 9.3683 19.7188 9.73744 19.3496L14.0001 15.0869L18.2628 19.3496C18.6408 19.7275 19.2911 19.7363 19.6691 19.3408C20.0646 18.9629 20.0558 18.3037 19.6779 17.9258L15.4152 13.6631L19.6779 9.40918C20.0558 9.02246 20.0646 8.37207 19.6691 7.99414C19.2911 7.59863 18.6408 7.60742 18.2628 7.98535L14.0001 12.248L9.73744 7.98535C9.3683 7.61621 8.70033 7.59863 8.3224 7.99414C7.92689 8.37207 7.94447 9.03125 8.31361 9.40039L12.5763 13.6631L8.31361 17.9346Z' fill='%23FFF'/%3E%3C/svg%3E%0A");
+}
+
+.footer.open .form {
+    display: block;
+}
+
+h2.form {
+    text-align: center;
+    font-weight: 200;
+    font-size: 18px;
+}
+
+form input {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    padding: 6px;
+    outline: none;
+    border: none;
+    font-family: "SFProText";
+    color: #fff;
+    margin: 0 2px;
+    transition: all 0.8s cubic-bezier(0.13, 0.85, 0.53, 1.02);
+}
+
+form input[type="submit"] {
+    cursor: pointer;
+}
+
+form input:focus,
+form input:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+/*  WEATHER BACKGROUNDS  */
+
+.bg-clear {
+    background: rgb(0, 91, 212);
+    background: linear-gradient(0deg, rgba(0, 91, 212, 0.7707676820728291) 14%, rgba(161, 177, 238, 1) 100%);
+}
+
+.bg-notclear {
+    background: rgb(92, 101, 112);
+    background: linear-gradient(0deg, rgba(92, 101, 112, 0.77) 14%, rgba(189, 195, 203, 1) 100%);
+}

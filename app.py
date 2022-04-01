@@ -1,24 +1,24 @@
-from aifc import Error
 import sys
+import os
 from flask import Flask, render_template, request, Markup
 import urllib3
-from dotenv import dotenv_values
+# from dotenv import dotenv_values
 import json
 from utils import DictObj, get_icon, get_day, is_before_now, is_now, is_clear
 from datetime import datetime
 import requests #type: ignore
 
-env = dotenv_values('.env')
+# env = dotenv_values('.env')
 
-if not env['IP_TOKEN'] or env['IP_TOKEN'] == None:
-    print("IPInfo.io token is required!\n")
-    print("Create a .env file in the project root and set IP_TOKEN to your api token.")
-    sys.exit(1)
+# if not env['IP_TOKEN'] or env['IP_TOKEN'] == None:
+#     print("IPInfo.io token is required!\n")
+#     print("Create a .env file in the project root and set IP_TOKEN to your api token.")
+#     sys.exit(1)
 
-if not env['WEATHER_API_KEY'] or env['WEATHER_API_KEY'] == None:
-    print("WeatherAPI.com API key is required!\n")
-    print("Create a .env file in the project root and set WEATHER_API_KEY to your api token.")
-    sys.exit(1)
+# if not env['WEATHER_API_KEY'] or env['WEATHER_API_KEY'] == None:
+#     print("WeatherAPI.com API key is required!\n")
+#     print("Create a .env file in the project root and set WEATHER_API_KEY to your api token.")
+#     sys.exit(1)
 
 http = urllib3.PoolManager()
 
@@ -42,31 +42,35 @@ def index():
     # default location
     location = '02108'
 
-    if request.method == "GET":
-
-        ip_address = request.remote_addr
-
-        # attempt to get the client's location from IP
-        if ip_address != "127.0.0.1" and ip_address != None:
-            try:
-                req = requests.get(f'https://ipinfo.io/{ip_address}?token={env["IP_TOKEN"]}')  # noqa
-                if req.status == 200:
-                    data = req.json()
-                    location = data['postal']
-            except:
-                print("Could not get location data from IP")
-                # it will continue executing here, only with the default location (Boston)
-
-    else:
-        # can be postal code or typed location
+    if request.method == "POST":
         location = request.form.get('location')
+
+    # if request.method == "GET":
+
+    #     ip_address = request.remote_addr
+
+    #     # attempt to get the client's location from IP
+    #     if ip_address != "127.0.0.1" and ip_address != None:
+    #         try:
+    #             req = requests.get(f'https://ipinfo.io/{ip_address}?token={env["IP_TOKEN"]}')  # noqa
+    #             if req.status == 200:
+    #                 data = req.json()
+    #                 location = data['postal']
+    #         except:
+    #             print("Could not get location data from IP")
+    #             # it will continue executing here, only with the default location (Boston)
+
+    # else:
+    #     # can be postal code or typed location
+    #     location = request.form.get('location')
 
     # get weather data
     try:
-        req = requests.get(f"https://api.weatherapi.com/v1/forecast.json?key={env['WEATHER_API_KEY']}&q={location}&days=3&aqi=no&alerts=no")  # noqa
+        req = requests.get(f"https://api.weatherapi.com/v1/forecast.json?key=5c984dc01e53499d9d202112222403&q={location}&days=3&aqi=no&alerts=no")  # noqa
         data = DictObj(req.json())
 
         if hasattr(data, 'error') and (hasattr(data.error, 'code') and (data.error.code == 1006 or hasattr(data.error, 'message'))):
+            print("Location error")
             return render_template("error.html", location=location, heading="Error", message=f"Could not get weather data for that location ({location}).")
         
         location_city_town = data.location.name
@@ -113,7 +117,6 @@ def index():
             condition_class = "bg-notclear"
 
         return render_template("output.html", location_city_town=location_city_town, temperature=temperature, conditions=conditions, high_temp=high_temp, low_temp=low_temp, forecast_list=forecast_list, ten_day_forecast=ten_day_forecast, condition_class=condition_class)
-    except Error as e:
+    except Exception as e:
         print(e)
-        # TODO: render layout template with error popup
         return render_template("error.html", location=location, heading="Error", message="Could not get weather data for that location.")

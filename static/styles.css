@@ -90,11 +90,18 @@ body {
     margin: 0;
     padding: 0;
     margin-top: 45px;
-    overflow: hidden;
+    overflow-y: scroll;
+    overflow-x: hidden;
     color: var(--light);
     display: flex;
     flex-direction: column;
     align-items: center;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+body::-webkit-scrollbar {
+    display: none;
 }
 
 a:visited {
@@ -170,8 +177,17 @@ nav {
     z-index: 10;
     height: 100%;
     width: 440px;
+    padding-bottom: 50px;
     border: 2px solid var(--blue);
+    overflow-y: scroll;
+    overflow-x: hidden;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
     box-shadow: 500px 0px 77px 100px rgba(0, 0, 0, 0.1), -500px 0px 77px 100px rgba(0, 0, 0, 0.1);
+}
+
+.phone-emulation-box::-webkit-scrollbar {
+    display: none;
 }
 
 .container {
@@ -179,8 +195,7 @@ nav {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-top: 45px;
-    padding-top: 40px;
+    padding-top: 85px;
 }
 
 .container .app {
@@ -225,9 +240,10 @@ nav {
 }
 
 .today-forecast-parent h4 {
-    font-size: 14px;
-    font-weight: 200;
+    font-size: 13px;
+    font-weight: 400;
     margin: 6px 10px 5px 10px;
+    opacity: 0.5;
 }
 
 .today-forecast-parent .today-forecast {
@@ -247,9 +263,10 @@ nav {
 .today-forecast .forecast-item {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     margin: 10px;
+    max-height: 90px;
 }
 
 .ten-day-forecast {
@@ -259,12 +276,14 @@ nav {
     background-color: rgba(0, 0, 0, 0.1);
     border-radius: 15px;
     margin-top: 15px;
+    margin-bottom: 60px;
 }
 
 .ten-day-forecast h4 {
-    font-size: 14px;
-    font-weight: 200;
+    font-size: 13px;
+    font-weight: 400;
     margin: 6px 10px 5px 10px;
+    opacity: 0.5;
 }
 
 .ten-day-item {
@@ -274,11 +293,13 @@ nav {
     align-items: center;
     border-top: 1px solid rgba(255, 255, 255, 0.317);
     padding: 2.5px 0;
+    height: 56px;
 }
 
 .ten-day-item .time {
     justify-self: start;
     padding-left: 20px;
+    font-size: 18px;
 }
 
 .low-high {
@@ -297,10 +318,10 @@ nav {
     margin: 0;
     padding-bottom: 3px;
     padding-top: 3px;
-    position: absolute;
+    position: fixed;
     bottom: 0;
-    width: 100%;
-    height: 30px;
+    width: 440px;
+    height: 40px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -341,7 +362,7 @@ nav {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 100%;
+    width: 440px;
     height: 100%;
     padding: 0;
     margin: 0;
@@ -353,7 +374,6 @@ nav {
 .footer.open button {
     position: absolute;
     top: 20px;
-    right: 20px;
     background-image: url("data:image/svg+xml,%3Csvg width='28' height='28' viewBox='0 0 28 28' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M8.31361 17.9346C7.94447 18.3037 7.92689 18.9629 8.3224 19.3408C8.70033 19.7363 9.3683 19.7188 9.73744 19.3496L14.0001 15.0869L18.2628 19.3496C18.6408 19.7275 19.2911 19.7363 19.6691 19.3408C20.0646 18.9629 20.0558 18.3037 19.6779 17.9258L15.4152 13.6631L19.6779 9.40918C20.0558 9.02246 20.0646 8.37207 19.6691 7.99414C19.2911 7.59863 18.6408 7.60742 18.2628 7.98535L14.0001 12.248L9.73744 7.98535C9.3683 7.61621 8.70033 7.59863 8.3224 7.99414C7.92689 8.37207 7.94447 9.03125 8.31361 9.40039L12.5763 13.6631L8.31361 17.9346Z' fill='%23FFF'/%3E%3C/svg%3E%0A");
 }
 
@@ -388,6 +408,19 @@ form input:hover {
     background-color: rgba(0, 0, 0, 0.1);
 }
 
+.probability-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.probability-value {
+    color: var(--blue);
+    font-weight: 600;
+    font-size: 12px;
+}
+
 .error-modal {
     font-family: var(--font);
     width: 100%;
@@ -399,9 +432,39 @@ form input:hover {
     color: #000;
 }
 
+@media screen and (max-width: 768px) {
+    .time.nav {
+        padding: 10px;
+    }
+    .menu.nav {
+        padding: 10px;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .phone-emulation-box {
+        padding: 10px;
+        width: 100%;
+    }
+    .app {
+        width: 100% !important;
+        padding: 18px;
+    }
+    .today-forecast-parent {
+        margin-right: 20px;
+        margin-left: 20px;
+    }
+    .ten-day-forecast {
+        margin-right: 20px;
+        margin-left: 20px;
+    }
+}
+
 /*  WEATHER BACKGROUNDS  */
 
 .bg-clear {
+    height: 100%;
+    width: 100%;
     background: rgb(0, 91, 212);
     background: linear-gradient(0deg, rgba(0, 91, 212, 0.7707676820728291) 14%, rgba(161, 177, 238, 1) 100%);
 }

@@ -4,7 +4,7 @@ from flask import Flask, render_template, request, Markup
 import urllib3
 # from dotenv import dotenv_values
 import json
-from utils import DictObj, get_icon, get_day, is_before_now, is_now, is_clear
+from utils import DictObj, format_hour_forecast_obj, get_icon, get_day, is_before_now, is_now, is_clear, is_night, format_hour_forecast_obj
 from datetime import datetime
 import requests #type: ignore
 
@@ -45,25 +45,6 @@ def index():
     if request.method == "POST":
         location = request.form.get('location')
 
-    # if request.method == "GET":
-
-    #     ip_address = request.remote_addr
-
-    #     # attempt to get the client's location from IP
-    #     if ip_address != "127.0.0.1" and ip_address != None:
-    #         try:
-    #             req = requests.get(f'https://ipinfo.io/{ip_address}?token={env["IP_TOKEN"]}')  # noqa
-    #             if req.status == 200:
-    #                 data = req.json()
-    #                 location = data['postal']
-    #         except:
-    #             print("Could not get location data from IP")
-    #             # it will continue executing here, only with the default location (Boston)
-
-    # else:
-    #     # can be postal code or typed location
-    #     location = request.form.get('location')
-
     # get weather data
     try:
         req = requests.get(f"https://api.weatherapi.com/v1/forecast.json?key=5c984dc01e53499d9d202112222403&q={location}&days=3&aqi=no&alerts=no")  # noqa
@@ -83,20 +64,32 @@ def index():
 
         # populate forecast_list
         hour_forecast = data.forecast.forecastday[0].hour
+        
+        # get the sunrise/sunset times & conver to correct formats
+        # add date & convert to 24 hour time
+        now_date = data.location.localtime.split(" ")[0]
+        tomorrow_date = data.forecast.forecastday[1].date
+        today_sunrise    = now_date + " " + datetime.strptime(data.forecast.forecastday[0].astro.sunrise, "%I:%M %p").strftime("%H:%M")
+        today_sunset     = now_date + " " + datetime.strptime(data.forecast.forecastday[0].astro.sunset,  "%I:%M %p").strftime("%H:%M")
+        tomorrow_sunrise = tomorrow_date + " " + datetime.strptime(data.forecast.forecastday[1].astro.sunrise, "%I:%M %p").strftime("%H:%M")
+        tomorrow_sunset  = tomorrow_date + " " + datetime.strptime(data.forecast.forecastday[1].astro.sunset,  "%I:%M %p").strftime("%H:%M")
+
         for hour in hour_forecast:
+            # omit any weather data before the current hour
             if is_before_now(hour.time):
                 continue
             else:
-                temp_dict = {}
+                forecast_item = format_hour_forecast_obj(hour, today_sunrise, today_sunset, tomorrow_sunrise, tomorrow_sunset)
+                forecast_list.append(forecast_item)
 
-                if is_now(hour.time):
-                    temp_dict['time'] = "Now"
+        if len(forecast_list) < 24:
+            hour_forecast = data.forecast.forecastday[1].hour
+            for hour in hour_forecast:
+                if len(forecast_list) < 24:
+                    forecast_item = format_hour_forecast_obj(hour, today_sunrise, today_sunset, tomorrow_sunrise, tomorrow_sunset)
+                    forecast_list.append(forecast_item)
                 else:
-                    temp_dict['time'] = Markup(datetime.strptime(hour.time, "%Y-%m-%d %H:%M").strftime("%-I<span class=\"small\">%p</span>"))
-
-                temp_dict['icon'] = get_icon(hour.condition.text)
-                temp_dict['detail'] = round(hour.temp_f)
-                forecast_list.append(temp_dict)
+                    break
 
         # populate ten_day_forecast
         day_forecast = data.forecast.forecastday
@@ -104,7 +97,7 @@ def index():
         for day in day_forecast:
             temp_dict = {}
             temp_dict['time'] = get_day(day.date)
-            temp_dict['icon'] = get_icon(day.day.condition.text)
+            temp_dict['icon'] = get_icon(day.day.condition.text, False)
             temp_dict['low_temp'] = round(day.day.mintemp_f)
             temp_dict['high_temp'] = round(day.day.maxtemp_f)
             ten_day_forecast.append(temp_dict)

@@ -1,24 +1,37 @@
-import sys
-import os
+import sys, os, time
 from flask import Flask, render_template, request, Markup
 import urllib3
-# from dotenv import dotenv_values
+from dotenv import dotenv_values
 import json
-from utils import DictObj, format_hour_forecast_obj, get_icon, get_day, is_before_now, is_now, is_clear, is_night, format_hour_forecast_obj
+from utils import DictObj, format_hour_forecast_obj, get_icon, get_day, is_before_now, is_now, is_clear, is_night, tz_diff
 from datetime import datetime
-import requests #type: ignore
+import requests  # type: ignore
 
-# env = dotenv_values('.env')
+IP_TOKEN = None
+WEATHER_API_KEY = None
 
-# if not env['IP_TOKEN'] or env['IP_TOKEN'] == None:
-#     print("IPInfo.io token is required!\n")
-#     print("Create a .env file in the project root and set IP_TOKEN to your api token.")
-#     sys.exit(1)
+if os.environ.get("PRODUCTION", None):
+    if os.environ.get("IP_TOKEN", None) == None:
+        print("IPInfo.io token is required!\n")
 
-# if not env['WEATHER_API_KEY'] or env['WEATHER_API_KEY'] == None:
-#     print("WeatherAPI.com API key is required!\n")
-#     print("Create a .env file in the project root and set WEATHER_API_KEY to your api token.")
-#     sys.exit(1)
+    if os.environ.get("WEATHER_API_KEY", None) == None:
+        print("WeatherAPI.com API key is required!\n")
+
+    IP_TOKEN = os.environ.get('IP_TOKEN')
+    WEATHER_API_KEY = os.environ.get('WEATHER_API_KEY')
+else:
+    env = dotenv_values('.env')
+
+    if "IP_TOKEN" not in env:
+        print("IPInfo.io token is required!\n")
+        print("Create a .env file in the project root and set IP_TOKEN to your api token.")
+
+    if "WEATHER_API_KEY" not in env:
+        print("WeatherAPI.com API key is required!\n")
+        print("Create a .env file in the project root and set WEATHER_API_KEY to your api token.")
+
+    IP_TOKEN = env["IP_TOKEN"]
+    WEATHER_API_KEY = env["WEATHER_API_KEY"]
 
 http = urllib3.PoolManager()
 
@@ -41,52 +54,93 @@ def index():
 
     # default location
     location = '02108'
+    timezone = "America/New_York"
 
-    if request.method == "POST":
+    if request.method == "GET":
+        if "X-Forwarded-For" not in request.headers:
+            ip_address = None
+        else:
+            ip_address = request.headers['X-Forwarded-For']
+
+        # attempt to get the client's location from IP
+        if ip_address != "127.0.0.1" and ip_address != None:
+            try:
+                req = requests.get(f'https://ipinfo.io/{ip_address}?token={IP_TOKEN}')  # noqa
+                data = req.json()
+                timezone = data['timezone']
+            except Exception as e:
+                print(e)
+                print("Could not get location data from IP")
+                # it will continue executing here, only with the default location (Boston)
+    else:
+        if "X-Forwarded-For" not in request.headers:
+            ip_address = None
+        else:
+            ip_address = request.headers['X-Forwarded-For']
+
+        # attempt to get the client's location from IP
+        if ip_address != "127.0.0.1" and ip_address != None:
+            try:
+                req = requests.get(f'https://ipinfo.io/{ip_address}?token={IP_TOKEN}')  # noqa
+                data = req.json()
+                timezone = data['timezone']
+            except Exception as e:
+                print(e)
+                print("Could not get location data from IP")
+                # it will continue executing here, only with the default location (Boston)
         location = request.form.get('location')
+
+    if request.args.get("location", None):
+        location = request.args.get("location")
+
+    # set the python timezone to user timezone for this execution
+    os.environ['TZ'] = timezone
+    time.tzset()
 
     # get weather data
     try:
-        req = requests.get(f"https://api.weatherapi.com/v1/forecast.json?key=5c984dc01e53499d9d202112222403&q={location}&days=3&aqi=no&alerts=no")  # noqa
+        req = requests.get(f"https://api.weatherapi.com/v1/forecast.json?key={WEATHER_API_KEY}&q={location}&days=3&aqi=no&alerts=no&tz_id={timezone}")  # noqa
         data = DictObj(req.json())
 
         if hasattr(data, 'error') and (hasattr(data.error, 'code') and (data.error.code == 1006 or hasattr(data.error, 'message'))):
             print("Location error")
             return render_template("error.html", location=location, heading="Error", message=f"Could not get weather data for that location ({location}).")
-        
+
         location_city_town = data.location.name
         temperature = round(data.current.temp_f)
         conditions = data.current.condition.text
         high_temp = round(data.forecast.forecastday[0].day.maxtemp_f)
         low_temp = round(data.forecast.forecastday[0].day.mintemp_f)
-        forecast_list = [] # list of dicts
-        ten_day_forecast = [] # list of dicts
+        forecast_list = []  # list of dicts
+        ten_day_forecast = []  # list of dicts
 
         # populate forecast_list
         hour_forecast = data.forecast.forecastday[0].hour
-        
+
         # get the sunrise/sunset times & conver to correct formats
         # add date & convert to 24 hour time
         now_date = data.location.localtime.split(" ")[0]
         tomorrow_date = data.forecast.forecastday[1].date
-        today_sunrise    = now_date + " " + datetime.strptime(data.forecast.forecastday[0].astro.sunrise, "%I:%M %p").strftime("%H:%M")
-        today_sunset     = now_date + " " + datetime.strptime(data.forecast.forecastday[0].astro.sunset,  "%I:%M %p").strftime("%H:%M")
-        tomorrow_sunrise = tomorrow_date + " " + datetime.strptime(data.forecast.forecastday[1].astro.sunrise, "%I:%M %p").strftime("%H:%M")
-        tomorrow_sunset  = tomorrow_date + " " + datetime.strptime(data.forecast.forecastday[1].astro.sunset,  "%I:%M %p").strftime("%H:%M")
+        today_sunrise = now_date + " " + datetime.strptime(data.forecast.forecastday[0].astro.sunrise, "%I:%M %p").strftime("%H:%M")  # noqa
+        today_sunset = now_date + " " + datetime.strptime(data.forecast.forecastday[0].astro.sunset,  "%I:%M %p").strftime("%H:%M")  # noqa
+        tomorrow_sunrise = tomorrow_date + " " + datetime.strptime(data.forecast.forecastday[1].astro.sunrise, "%I:%M %p").strftime("%H:%M")  # noqa
+        tomorrow_sunset = tomorrow_date + " " + datetime.strptime(data.forecast.forecastday[1].astro.sunset,  "%I:%M %p").strftime("%H:%M")  # noqa
+
+        # client_server_timezone_diff = tz_diff(timezone, data.location.tz_id)
 
         for hour in hour_forecast:
             # omit any weather data before the current hour
             if is_before_now(hour.time):
                 continue
             else:
-                forecast_item = format_hour_forecast_obj(hour, today_sunrise, today_sunset, tomorrow_sunrise, tomorrow_sunset)
+                forecast_item = format_hour_forecast_obj(hour, today_sunrise, today_sunset, tomorrow_sunrise, tomorrow_sunset)  # noqa
                 forecast_list.append(forecast_item)
 
         if len(forecast_list) < 24:
             hour_forecast = data.forecast.forecastday[1].hour
             for hour in hour_forecast:
                 if len(forecast_list) < 24:
-                    forecast_item = format_hour_forecast_obj(hour, today_sunrise, today_sunset, tomorrow_sunrise, tomorrow_sunset)
+                    forecast_item = format_hour_forecast_obj(hour, today_sunrise, today_sunset, tomorrow_sunrise, tomorrow_sunset)  # noqa
                     forecast_list.append(forecast_item)
                 else:
                     break
@@ -97,7 +151,7 @@ def index():
         for day in day_forecast:
             temp_dict = {}
             temp_dict['time'] = get_day(day.date)
-            temp_dict['icon'] = get_icon(day.day.condition.text, False)
+            temp_dict['icon'] = get_icon(day.day.condition.text, False, day.day.daily_chance_of_rain, day.day.daily_chance_of_snow)
             temp_dict['low_temp'] = round(day.day.mintemp_f)
             temp_dict['high_temp'] = round(day.day.maxtemp_f)
             ten_day_forecast.append(temp_dict)
@@ -109,7 +163,14 @@ def index():
         else:
             condition_class = "bg-notclear"
 
-        return render_template("output.html", location_city_town=location_city_town, temperature=temperature, conditions=conditions, high_temp=high_temp, low_temp=low_temp, forecast_list=forecast_list, ten_day_forecast=ten_day_forecast, condition_class=condition_class)
+        # reset timezone
+        os.environ['TZ'] = "America/New_York"
+        time.tzset()
+
+        return render_template("output.html", location_city_town=location_city_town, temperature=temperature, conditions=conditions, high_temp=high_temp, low_temp=low_temp, forecast_list=forecast_list, ten_day_forecast=ten_day_forecast, condition_class=condition_class)  # noqa
     except Exception as e:
+        # reset timezone
+        os.environ['TZ'] = "America/New_York"
+        time.tzset()
         print(e)
-        return render_template("error.html", location=location, heading="Error", message="Could not get weather data for that location.")
+        return render_template("error.html", location_city_town=location, heading="Error", message="Could not get weather data for that location.")  # noqa

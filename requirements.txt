@@ -3,9 +3,14 @@ gunicorn==20.1.0
 Jinja2==3.0.3
 jmespath==0.10.0
 MarkupSafe==2.1.1
+pendulum==1.2.5
 python-dateutil==2.8.2
 python-dotenv==0.19.2
+pytz==2021.3
+pytzdata==2020.1
+PyYAML==5.4.1
 requests==2.27.1
+toml==0.10.2
 urllib3==1.26.7
 Werkzeug==2.0.3
 xlrd==2.0.1

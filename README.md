@@ -216,7 +216,7 @@ Returns a `Dict` containing required elements for rendering the UI. Includes `ti
 
 ### `tz_diff`
 ```python
-tz_diff(home: str, away: str on=None)
+tz_diff(home: str, away: str, on=None)
 ```
 Calculates the hourly difference between two timezones using the `pendulum` library (v.1.2.5). It was used when solving the Timezone problem, but is not currently used (may be useful in the future).
 

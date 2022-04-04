@@ -20,7 +20,7 @@ A full list of features included (as of submission) are:
 ## Technologies Used
 - Flask
 - [Public Weather API](http://weatherapi.com) (for weather data)
-- [Public IP Address Location API](https://ipinfo.io) (for retrieving the zip code of the IP address that requested the content)
+- [Public IP Address Location API](https://ipinfo.io) (for retrieving the timezone of the IP address that requested the content)
 
 ## Languages
 - Python

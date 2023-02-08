@@ -163,7 +163,6 @@ def index():
         else:
             condition_class = "bg-notclear"
 
-        # reset timezone
         os.environ['TZ'] = "America/New_York"
         time.tzset()
 

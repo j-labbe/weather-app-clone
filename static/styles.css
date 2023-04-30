@@ -333,7 +333,7 @@ nav {
     background: rgba(0, 0, 0, 0.2);
 }
 
-.footer button {
+.footer button.search {
     background: transparent;
     background-image: url("data:image/svg+xml,%3Csvg width='28' height='28' viewBox='0 0 28 28' fill='none' xmlns='http://www.w3.org/2000/svg' id='search'%3E%3Cpath d='M12.5322 19.0332C13.9297 19.0332 15.2393 18.6113 16.3291 17.8906L20.1787 21.749C20.4336 21.9951 20.7588 22.1182 21.1104 22.1182C21.8398 22.1182 22.376 21.5469 22.376 20.8262C22.376 20.4922 22.2617 20.167 22.0156 19.9209L18.1924 16.0801C18.9834 14.9551 19.4492 13.5928 19.4492 12.1162C19.4492 8.31055 16.3379 5.19922 12.5322 5.19922C8.73535 5.19922 5.61523 8.31055 5.61523 12.1162C5.61523 15.9219 8.72656 19.0332 12.5322 19.0332ZM12.5322 17.1875C9.74609 17.1875 7.46094 14.9023 7.46094 12.1162C7.46094 9.33008 9.74609 7.04492 12.5322 7.04492C15.3184 7.04492 17.6035 9.33008 17.6035 12.1162C17.6035 14.9023 15.3184 17.1875 12.5322 17.1875Z' fill='%23FFF' id='search'/%3E%3C/svg%3E");
     outline: none;
@@ -371,7 +371,7 @@ nav {
     backdrop-filter: blur(10px);
 }
 
-.footer.open button {
+.footer.open .close {
     position: absolute;
     top: 20px;
     background-image: url("data:image/svg+xml,%3Csvg width='28' height='28' viewBox='0 0 28 28' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M8.31361 17.9346C7.94447 18.3037 7.92689 18.9629 8.3224 19.3408C8.70033 19.7363 9.3683 19.7188 9.73744 19.3496L14.0001 15.0869L18.2628 19.3496C18.6408 19.7275 19.2911 19.7363 19.6691 19.3408C20.0646 18.9629 20.0558 18.3037 19.6779 17.9258L15.4152 13.6631L19.6779 9.40918C20.0558 9.02246 20.0646 8.37207 19.6691 7.99414C19.2911 7.59863 18.6408 7.60742 18.2628 7.98535L14.0001 12.248L9.73744 7.98535C9.3683 7.61621 8.70033 7.59863 8.3224 7.99414C7.92689 8.37207 7.94447 9.03125 8.31361 9.40039L12.5763 13.6631L8.31361 17.9346Z' fill='%23FFF'/%3E%3C/svg%3E%0A");
@@ -387,7 +387,7 @@ h2.form {
     font-size: 18px;
 }
 
-form input {
+.form input {
     background-color: rgba(0, 0, 0, 0.2);
     border-radius: 5px;
     padding: 6px;
@@ -399,13 +399,19 @@ form input {
     transition: all 0.8s cubic-bezier(0.13, 0.85, 0.53, 1.02);
 }
 
-form input[type="submit"] {
-    cursor: pointer;
+.form input:focus,
+.form input:hover {
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
-form input:focus,
-form input:hover {
-    background-color: rgba(0, 0, 0, 0.1);
+.form button.submit {
+    background-color: rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    padding: 7px 15px;
+    border-radius: 5px;
+    border: none;
+    color: #FFF;
+    transition: all 0.8s cubic-bezier(0.13, 0.85, 0.53, 1.02);
 }
 
 .probability-icon {

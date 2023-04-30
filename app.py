@@ -7,30 +7,27 @@ from utils import DictObj, format_hour_forecast_obj, get_icon, get_day, is_befor
 from datetime import datetime
 import requests  # type: ignore
 
-IP_TOKEN = None
 WEATHER_API_KEY = None
 
-if os.environ.get("PRODUCTION", None):
-    if os.environ.get("IP_TOKEN", None) == None:
-        print("IPInfo.io token is required!\n")
+prod_mode = os.environ.get("PRODUCTION", True)
+
+if prod_mode:
 
     if os.environ.get("WEATHER_API_KEY", None) == None:
-        print("WeatherAPI.com API key is required!\n")
+        print("WeatherAPI.com API key is required! Set your environment to export WEATHER_API_KEY")
 
-    IP_TOKEN = os.environ.get('IP_TOKEN')
     WEATHER_API_KEY = os.environ.get('WEATHER_API_KEY')
+
+    if WEATHER_API_KEY == "NOKEY":
+        print("Please supply a weather api key. See README.md for details.")
+        sys.exit(2)
 else:
     env = dotenv_values('.env')
-
-    if "IP_TOKEN" not in env:
-        print("IPInfo.io token is required!\n")
-        print("Create a .env file in the project root and set IP_TOKEN to your api token.")
 
     if "WEATHER_API_KEY" not in env:
         print("WeatherAPI.com API key is required!\n")
         print("Create a .env file in the project root and set WEATHER_API_KEY to your api token.")
 
-    IP_TOKEN = env["IP_TOKEN"]
     WEATHER_API_KEY = env["WEATHER_API_KEY"]
 
 http = urllib3.PoolManager()
@@ -55,40 +52,6 @@ def index():
     # default location
     location = '02108'
     timezone = "America/New_York"
-
-    if request.method == "GET":
-        if "X-Forwarded-For" not in request.headers:
-            ip_address = None
-        else:
-            ip_address = request.headers['X-Forwarded-For']
-
-        # attempt to get the client's location from IP
-        if ip_address != "127.0.0.1" and ip_address != None:
-            try:
-                req = requests.get(f'https://ipinfo.io/{ip_address}?token={IP_TOKEN}')  # noqa
-                data = req.json()
-                timezone = data['timezone']
-            except Exception as e:
-                print(e)
-                print("Could not get location data from IP")
-                # it will continue executing here, only with the default location (Boston)
-    else:
-        if "X-Forwarded-For" not in request.headers:
-            ip_address = None
-        else:
-            ip_address = request.headers['X-Forwarded-For']
-
-        # attempt to get the client's location from IP
-        if ip_address != "127.0.0.1" and ip_address != None:
-            try:
-                req = requests.get(f'https://ipinfo.io/{ip_address}?token={IP_TOKEN}')  # noqa
-                data = req.json()
-                timezone = data['timezone']
-            except Exception as e:
-                print(e)
-                print("Could not get location data from IP")
-                # it will continue executing here, only with the default location (Boston)
-        location = request.form.get('location')
 
     if request.args.get("location", None):
         location = request.args.get("location")

@@ -15,14 +15,28 @@
     }
 
     function handleSearchButtonClick(e) {
-        console.log(e);
         if (e.target.id === "search") {
             document.getElementById("footer").classList.toggle("open");
+        }
+    }
+
+    function handleSubmitButtonClick(e) {
+        if (e.target.className == "submit") {
+            window.location = window.location.origin + "/?location=" +  encodeURIComponent(document.getElementById("location").value);
+        }
+    }
+
+    function handleEnterPress(e) {
+        if (e.which == 13) {
+            e.preventDefault();
+            window.location = window.location.origin + "/?location=" +  encodeURIComponent(document.getElementById("location").value);
         }
     }
 
     document.addEventListener("DOMContentLoaded", renderTime);
 
     document.addEventListener("click", handleSearchButtonClick);
+    document.addEventListener("click", handleSubmitButtonClick);
+    document.addEventListener("keydown", handleEnterPress);
 
 })();

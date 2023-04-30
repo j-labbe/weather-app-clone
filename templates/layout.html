@@ -31,12 +31,12 @@
     </nav>
     {% block main %}{% endblock main %}
     <div class="footer" id="footer">
-        <button id="search"></button>
+        <button id="search" class="search close"></button>
         <h2 class="form">Search for a city</h2>
-        <form class="form" method="POST" action="/">
+        <div class="form">
             <input name="location" id="location" placeholder="Zip Code or Name" autocomplete="off" />
-            <input type="submit" />
-        </form>
+            <button type="submit" id="submit" class="submit">Search</button>
+        </div>
     </div>
 </div>
 </body>

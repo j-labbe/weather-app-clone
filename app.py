@@ -1,5 +1,5 @@
 import sys, os, time
-from flask import Flask, render_template, request, Markup
+from flask import Flask, render_template, request
 import urllib3
 from dotenv import dotenv_values
 import json

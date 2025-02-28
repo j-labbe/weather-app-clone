@@ -1,4 +1,4 @@
-from flask import Markup
+from markupsafe import Markup
 from datetime import datetime, timedelta
 import pendulum
 

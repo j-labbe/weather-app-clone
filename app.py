@@ -45,6 +45,9 @@ def after_request(response):
     response.headers["Pragma"] = "no-cache"
     return response
 
+@app.route("/heartbeat", methods=['GET'])
+def heartbeat():
+    return "OK"
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
